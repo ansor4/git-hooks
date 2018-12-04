@@ -1,0 +1,20 @@
+#!/bin/bash
+
+changed_files=$(git diff --name-only HEAD master)
+
+rubocop $changed_files
+ret_code=$?
+
+if [ $ret_code != 0 ]; then
+    echo Rubocop returned $ret_code
+    echo "Apply auto-fix? (y/n)"
+    exec < /dev/tty
+    read -r yesno
+    if [[ $yesno == 'y' ]]; then
+        rubocop -a $changed_files
+        exit 0
+    fi
+    exit 1
+fi
+
+exit 0
