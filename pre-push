@@ -1,8 +1,13 @@
 #!/bin/bash
 
-changed_files=$(git diff --name-only HEAD master)
+for changed_file in $(git diff --name-only HEAD master); do
+    echo $changed_file
+    if test -f "$changed_file"; then
+        changed_files="$changed_files $changed_file"
+    fi
+done
 
-rubocop $changed_files
+bundle exec rubocop $changed_files
 ret_code=$?
 
 if [ $ret_code != 0 ]; then
